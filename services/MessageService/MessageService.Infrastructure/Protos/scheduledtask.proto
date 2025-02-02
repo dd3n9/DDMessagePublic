@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "SchedulerService";
+
+service GrpcScheduler {
+	rpc GetMessageStatus (GetMessageStatusRequest) returns (GetMessageStatusResponse);
+}
+
+message GetMessageStatusRequest {
+	string externalMessageId = 1;
+}
+
+message GetMessageStatusResponse {
+	string messageStatus = 1;
+}

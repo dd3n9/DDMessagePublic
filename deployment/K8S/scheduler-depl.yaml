@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: schedulerservice
+  template:
+    metadata:
+      labels:
+        app: schedulerservice
+    spec:
+      containers:
+        - name: schedulerservice
+          image: dd3n9/schedulerservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: schedulerservice
+  ports:
+    - name: schedulerservice
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

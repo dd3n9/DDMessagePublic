@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-ntf-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql-ntf
+  template:
+    metadata:
+      labels:
+        app: mssql-ntf
+    spec:
+      containers:
+        - name: mssql-ntf
+          image: mcr.microsoft.com/mssql/server:2019-latest
+          ports:
+            - containerPort: 1433
+          env:
+            - name: MSSQL_PID
+              value: "Express"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
+          volumeMounts:
+            - mountPath: /var/opt/mssql/data
+              name: mssql-ntfdb
+      volumes:
+        - name: mssql-ntfdb
+          persistentVolumeClaim:
+            claimName: mssql-ntf-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-ntf-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: mssql-ntf
+  ports:
+    - name: mssql-ntf
+      protocol: TCP
+      port: 1433
+      targetPort: 1433

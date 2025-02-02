@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "UserService";
+
+service GrpcUser {
+	rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
+}
+
+message GetUserByEmailRequest {
+	string email = 1;
+}
+
+message GetUserByEmailResponse {
+	optional string externalUserId = 1;
+	string email = 2;
+}
